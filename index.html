@@ -1,598 +1,626 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemantauan Kualitas Air - Budidaya Ikan</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pemantauan Kualitas Air</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #0ea5e9;
+      --primary-blue-dark: #0284c7;
+      --secondary-teal: #14b8a6;
+      --secondary-teal-dark: #0d9488;
+      --accent-orange: #f97316;
+      --accent-orange-dark: #ea580c;
+      --success-green: #10b981;
+      --warning-yellow: #f59e0b;
+      --error-red: #ef4444;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-400: #94a3b8;
+      --gray-500: #64748b;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --gray-800: #1e293b;
+      --gray-900: #0f172a;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0ea5e9 0%, #14b8a6 50%, #10b981 100%);
+      min-height: 100vh;
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-        }
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.2) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
+    .header-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
 
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-        }
+    .header p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
 
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
 
-        .icon {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
+    .card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInUp 0.8s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .sensor-grid {
-            display: grid;
-            gap: 15px;
-        }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--secondary-teal));
+      border-radius: 1.5rem 1.5rem 0 0;
+    }
 
-        .sensor-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
 
-        .sensor-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+    .sensor-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      background: var(--gray-50);
+      border-radius: 1rem;
+      border: 1px solid var(--gray-200);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .sensor-temp {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-        }
+    .sensor-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary-blue);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
 
-        .sensor-do {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        }
+    .sensor-item:hover {
+      background: var(--white);
+      border-color: var(--primary-blue);
+      box-shadow: var(--shadow-md);
+    }
 
-        .sensor-ph {
-            background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);
-        }
+    .sensor-item:hover::before {
+      transform: scaleY(1);
+    }
 
-        .sensor-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    .sensor-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
 
-        .sensor-icon {
-            width: 40px;
-            height: 40px;
-            padding: 8px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.3);
-        }
+    .sensor-icon {
+      width: 3rem;
+      height: 3rem;
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-teal));
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      box-shadow: var(--shadow-md);
+    }
 
-        .sensor-details h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
+    .sensor-details h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 0.25rem;
+    }
 
-        .sensor-details p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
+    .sensor-details p {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      font-weight: 400;
+    }
 
-        .sensor-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #2d3748;
-        }
+    .sensor-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      text-align: right;
+    }
 
-        .fish-selector {
-            margin-bottom: 25px;
-        }
+    .prediction-card {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(14, 165, 233, 0.1));
+      border: 2px solid rgba(16, 185, 129, 0.2);
+    }
 
-        .fish-selector label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #4a5568;
-        }
+    .prediction-card::before {
+      background: linear-gradient(90deg, var(--success-green), var(--primary-blue));
+    }
 
-        .fish-select {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            background: white;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+    .prediction-content {
+      text-align: center;
+      padding: 2rem 0;
+    }
 
-        .fish-select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+    .prediction-icon {
+      width: 4rem;
+      height: 4rem;
+      background: linear-gradient(135deg, var(--success-green), var(--secondary-teal));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: var(--white);
+      box-shadow: var(--shadow-lg);
+    }
 
-        .status-overall {
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-        }
+    .prediction-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 1rem;
+    }
 
-        .status-good {
-            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-            color: #065f46;
-        }
+    .prediction-result {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--success-green);
+      margin-bottom: 0.5rem;
+    }
 
-        .status-bad {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            color: #7f1d1d;
-        }
+    .prediction-subtitle {
+      font-size: 1rem;
+      color: var(--gray-600);
+    }
 
-        .parameter-list {
-            display: grid;
-            gap: 12px;
-        }
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-green);
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
 
-        .parameter-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            background: rgba(247, 250, 252, 0.8);
-            border-radius: 10px;
-            border-left: 4px solid transparent;
-        }
+    .status-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--success-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
 
-        .parameter-good {
-            border-left-color: #10b981;
-        }
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-        .parameter-bad {
-            border-left-color: #ef4444;
-        }
+    .footer p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
 
-        .parameter-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
 
-        .parameter-status {
-            text-align: right;
-        }
+    .footer-link {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
 
-        .parameter-value {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
+    .footer-link:hover {
+      color: var(--white);
+    }
 
-        .parameter-range {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-top: 2px;
-        }
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      color: var(--gray-600);
+    }
 
-        .status-icon {
-            width: 20px;
-            height: 20px;
-        }
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
 
-        .good-icon {
-            color: #10b981;
-        }
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error-red);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
 
-        .bad-icon {
-            color: #ef4444;
-        }
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-        }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #e5e7eb;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
 
-        .error-message {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #f59e0b;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #92400e;
-        }
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
 
-        .footer {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9rem;
-            margin-top: 30px;
-        }
+      .header h1 {
+        font-size: 2rem;
+      }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: #6b7280;
-        }
+      .header p {
+        font-size: 1rem;
+      }
 
-        .empty-state svg {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
+      .card {
+        padding: 1.5rem;
+      }
 
-        @media (max-width: 768px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .sensor-item {
-                padding: 15px;
-            }
-            
-            .sensor-value {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
+      .sensor-item {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .sensor-value {
+        text-align: center;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.75rem;
+      }
+
+      .prediction-result {
+        font-size: 1.5rem;
+      }
+
+      .sensor-value {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🐟 Pemantauan Kualitas Air</h1>
-            <p>Sistem monitoring real-time untuk budidaya ikan</p>
-        </div>
-
-        <div class="main-grid">
-            <!-- Sensor Data Card -->
-            <div class="card">
-                <div class="card-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-                    </svg>
-                    Data Sensor Terkini
-                    <span id="last-updated" style="margin-left: auto; font-size: 0.8rem; font-weight: normal; opacity: 0.7;"></span>
-                </div>
-
-                <div id="error-container"></div>
-                
-                <div id="loading" class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Memuat data sensor...</p>
-                </div>
-
-                <div id="sensor-data" class="sensor-grid" style="display: none;">
-                    <div class="sensor-item sensor-temp">
-                        <div class="sensor-info">
-                            <svg class="sensor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>
-                            </svg>
-                            <div class="sensor-details">
-                                <h3>Suhu</h3>
-                                <p>Temperature</p>
-                            </div>
-                        </div>
-                        <div class="sensor-value" id="temp-value">--°C</div>
-                    </div>
-
-                    <div class="sensor-item sensor-do">
-                        <div class="sensor-info">
-                            <svg class="sensor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                            <div class="sensor-details">
-                                <h3>Oksigen Terlarut</h3>
-                                <p>Dissolved Oxygen</p>
-                            </div>
-                        </div>
-                        <div class="sensor-value" id="do-value">-- mg/L</div>
-                    </div>
-
-                    <div class="sensor-item sensor-ph">
-                        <div class="sensor-info">
-                            <svg class="sensor-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
-                            </svg>
-                            <div class="sensor-details">
-                                <h3>pH</h3>
-                                <p>Keasaman Air</p>
-                            </div>
-                        </div>
-                        <div class="sensor-value" id="ph-value">--</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fish Analysis Card -->
-            <div class="card">
-                <div class="card-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6.5 12c.94-3.46 4.94-6 8.5-6s7.56 2.54 8.5 6c-.94 3.46-4.94 6-8.5 6s-7.56-2.54-8.5-6Z"/>
-                        <path d="M18 10.5c-.64 1.11-1.48 2.06-2.5 2.8"/>
-                        <path d="M14.5 7.5c-1 .83-1.8 1.83-2.5 2.8"/>
-                    </svg>
-                    Analisis Kesesuaian Habitat
-                </div>
-
-                <div class="fish-selector">
-                    <label for="fish-select">Pilih Jenis Ikan</label>
-                    <select id="fish-select" class="fish-select">
-                        <option value="">-- Pilih Jenis Ikan --</option>
-                        <option value="gurame">🐟 Gurame</option>
-                        <option value="lele">🐟 Lele</option>
-                        <option value="nila">🐟 Nila</option>
-                    </select>
-                </div>
-
-                <div id="analysis-result">
-                    <div class="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6.5 12c.94-3.46 4.94-6 8.5-6s7.56 2.54 8.5 6c-.94 3.46-4.94 6-8.5 6s-7.56-2.54-8.5-6Z"/>
-                            <path d="M18 10.5c-.64 1.11-1.48 2.06-2.5 2.8"/>
-                            <path d="M14.5 7.5c-1 .83-1.8 1.83-2.5 2.8"/>
-                        </svg>
-                        <p>Pilih jenis ikan untuk melihat analisis kesesuaian habitat</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>Data diperbarui setiap 5 detik • Sistem Monitoring Budidaya Ikan</p>
-        </div>
+  <div class="background-pattern"></div>
+  
+  <div class="container">
+    <div class="header">
+      <div class="header-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: white;">
+          <path d="M6.5 12c.94-3.46 4.94-6 8.5-6s7.56 2.54 8.5 6c-.94 3.46-4.94 6-8.5 6s-7.56-2.54-8.5-6Z"/>
+          <path d="M18 12v.5"/>
+          <path d="M16 17.93a9.77 9.77 0 0 1 0 0"/>
+          <path d="M7 10.67C7 8 5.58 5.97 2.73 5.5c-1.13-.18-1.13-.5 0-.68C5.58 4.03 7 2 7 2s1.42 2.03 4.27 2.82c1.13.18 1.13.5 0 .68C8.42 5.97 7 8 7 10.67Z"/>
+          <path d="M10.46 7.26C10.2 5.88 9.17 4.24 8 3.33c-.59-.46-.59-.82 0-1.28C9.17.24 10.2-1.4 10.46-2.78"/>
+        </svg>
+      </div>
+      <h1>🐟 Pemantauan Kualitas Air</h1>
+      <p>Sistem monitoring real-time untuk budidaya ikan berkualitas tinggi</p>
     </div>
 
-    <script>
-        let sensorData = { suhu: null, do: null, ph: null, waktu: null };
-        let lastUpdated = null;
+    <div class="dashboard-grid">
+      <div class="card">
+        <div id="sensor-data">
+          <div class="loading">
+            <div class="spinner"></div>
+            <p>Memuat data sensor...</p>
+          </div>
+        </div>
+      </div>
 
-        const fishStandards = {
-            gurame: { suhu: [25, 30], do: [3, 6], ph: [6.5, 8] },
-            lele: { suhu: [25, 30], do: [2, 6], ph: [6, 8] },
-            nila: { suhu: [24, 30], do: [3, 6], ph: [6.5, 8.5] }
+      <div class="card prediction-card" id="prediction-card" style="display: none;">
+        <div class="prediction-content">
+          <div class="prediction-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6.5 12c.94-3.46 4.94-6 8.5-6s7.56 2.54 8.5 6c-.94 3.46-4.94 6-8.5 6s-7.56-2.54-8.5-6Z"/>
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v6m6 5h6m-7 7v6m-5-6H1"/>
+            </svg>
+          </div>
+          <h3 class="prediction-title">Rekomendasi Jenis Ikan</h3>
+          <div class="prediction-result" id="prediksi">--</div>
+          <p class="prediction-subtitle">Berdasarkan kondisi kualitas air saat ini</p>
+          <div style="margin-top: 1.5rem;">
+            <div class="status-indicator">
+              <div class="status-dot"></div>
+              <span>Kondisi Optimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p><strong>Data diperbarui setiap 5 detik</strong></p>
+      <p>Sistem Monitoring Budidaya Ikan Terpadu</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Dashboard</a>
+        <a href="#" class="footer-link">Riwayat Data</a>
+        <a href="#" class="footer-link">Pengaturan</a>
+        <a href="#" class="footer-link">Bantuan</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isFirstLoad = true;
+
+    async function fetchData() {
+      try {
+        const response = await fetch("https://klasifikasi-ikan-api.onrender.com/classify");
+        if (!response.ok) throw new Error("Gagal mengambil data dari server");
+        const data = await response.json();
+
+        const processedData = {
+          suhu: data.rata_rata.suhu,
+          do: data.rata_rata.do,
+          ph: data.rata_rata.ph,
+          waktu: new Date().toLocaleString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          }),
+          prediksi: Array.isArray(data.prediksi) ? data.prediksi.join(", ") : data.prediksi
         };
 
-        const fishNames = {
-            gurame: 'Gurame',
-            lele: 'Lele',
-            nila: 'Nila'
-        };
-
-        async function fetchData() {
-            try {
-                const response = await fetch("https://klasifikasi-ikan-api.onrender.com/last-prediction");
-                
-                if (!response.ok) {
-                    throw new Error('Gagal mengambil data sensor');
-                }
-                
-                const data = await response.json();
-                sensorData = data;
-                lastUpdated = new Date();
-                
-                updateSensorDisplay();
-                hideError();
-                
-            } catch (error) {
-                showError(error.message);
-                
-                // Fallback to demo data
-                sensorData = {
-                    suhu: 27.5,
-                    do: 4.2,
-                    ph: 7.1,
-                    waktu: new Date().toISOString()
-                };
-                lastUpdated = new Date();
-                updateSensorDisplay();
-            }
+        updateDashboard(processedData);
+        
+        if (isFirstLoad) {
+          document.getElementById('prediction-card').style.display = 'block';
+          isFirstLoad = false;
         }
+      } catch (error) {
+        console.error("Error:", error);
+        showError("Gagal memuat data. Periksa koneksi atau server.");
+      }
+    }
 
-        function updateSensorDisplay() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('sensor-data').style.display = 'grid';
-            
-            document.getElementById('temp-value').textContent = `${sensorData.suhu}°C`;
-            document.getElementById('do-value').textContent = `${sensorData.do} mg/L`;
-            document.getElementById('ph-value').textContent = sensorData.ph;
-            
-            if (lastUpdated) {
-                document.getElementById('last-updated').textContent = 
-                    `Terakhir: ${lastUpdated.toLocaleTimeString()}`;
-            }
-            
-            evaluateFish();
-        }
+    function updateDashboard(data) {
+      const sensorData = document.getElementById("sensor-data");
+      
+      sensorData.innerHTML = `
+        <div class="sensor-item">
+          <div class="sensor-info">
+            <div class="sensor-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>
+              </svg>
+            </div>
+            <div class="sensor-details">
+              <h3>Suhu Air</h3>
+              <p>Temperature</p>
+            </div>
+          </div>
+          <div class="sensor-value">${data.suhu} °C</div>
+        </div>
 
-        function showError(message) {
-            const errorContainer = document.getElementById('error-container');
-            errorContainer.innerHTML = `
-                <div class="error-message">
-                    <strong>⚠️ ${message}</strong>
-                    <p style="margin-top: 5px; font-size: 0.9rem;">Menampilkan data demo untuk demonstrasi</p>
-                </div>
-            `;
-        }
+        <div class="sensor-item">
+          <div class="sensor-info">
+            <div class="sensor-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <div class="sensor-details">
+              <h3>Oksigen Terlarut</h3>
+              <p>Dissolved Oxygen</p>
+            </div>
+          </div>
+          <div class="sensor-value">${data.do} mg/L</div>
+        </div>
 
-        function hideError() {
-            document.getElementById('error-container').innerHTML = '';
-        }
+        <div class="sensor-item">
+          <div class="sensor-info">
+            <div class="sensor-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+              </svg>
+            </div>
+            <div class="sensor-details">
+              <h3>pH Air</h3>
+              <p>Keasaman Air</p>
+            </div>
+          </div>
+          <div class="sensor-value">${data.ph}</div>
+        </div>
 
-        function checkParameter(value, range) {
-            return value >= range[0] && value <= range[1];
-        }
+        <div class="sensor-item">
+          <div class="sensor-info">
+            <div class="sensor-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v6m6 5h6m-7 7v6m-5-6H1"/>
+              </svg>
+            </div>
+            <div class="sensor-details">
+              <h3>Terakhir Update</h3>
+              <p>Last Updated</p>
+            </div>
+          </div>
+          <div class="sensor-value" style="font-size: 1rem;">${data.waktu}</div>
+        </div>
+      `;
 
-        function evaluateFish() {
-            const selectedFish = document.getElementById('fish-select').value;
-            const resultContainer = document.getElementById('analysis-result');
-            
-            if (!selectedFish || !sensorData.suhu) {
-                resultContainer.innerHTML = `
-                    <div class="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6.5 12c.94-3.46 4.94-6 8.5-6s7.56 2.54 8.5 6c-.94 3.46-4.94 6-8.5 6s-7.56-2.54-8.5-6Z"/>
-                            <path d="M18 10.5c-.64 1.11-1.48 2.06-2.5 2.8"/>
-                            <path d="M14.5 7.5c-1 .83-1.8 1.83-2.5 2.8"/>
-                        </svg>
-                        <p>Pilih jenis ikan untuk melihat analisis kesesuaian habitat</p>
-                    </div>
-                `;
-                return;
-            }
+      document.getElementById("prediksi").textContent = data.prediksi;
+    }
 
-            const standards = fishStandards[selectedFish];
-            const suhuOk = checkParameter(sensorData.suhu, standards.suhu);
-            const doOk = checkParameter(sensorData.do, standards.do);
-            const phOk = checkParameter(sensorData.ph, standards.ph);
-            
-            const allOk = suhuOk && doOk && phOk;
-            const fishName = fishNames[selectedFish];
+    function showError(msg) {
+      const sensorData = document.getElementById("sensor-data");
+      sensorData.innerHTML = `
+        <div class="error">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem;">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <path d="M12 9v4"/>
+            <path d="m12 17 .01 0"/>
+          </svg>
+          <p><strong>Terjadi Kesalahan</strong></p>
+          <p>${msg}</p>
+        </div>
+      `;
+    }
 
-            // Overall status
-            const overallStatus = allOk 
-                ? `Kondisi air sangat sesuai untuk budidaya ${fishName}`
-                : `Beberapa parameter tidak sesuai untuk budidaya ${fishName}`;
+    // Initial fetch
+    fetchData();
 
-            // Parameter details
-            const parameters = [
-                { name: 'Suhu', value: sensorData.suhu, range: standards.suhu, unit: '°C', ok: suhuOk },
-                { name: 'Oksigen Terlarut', value: sensorData.do, range: standards.do, unit: 'mg/L', ok: doOk },
-                { name: 'pH', value: sensorData.ph, range: standards.ph, unit: '', ok: phOk }
-            ];
-
-            let parametersHtml = '';
-            parameters.forEach(param => {
-                const statusClass = param.ok ? 'parameter-good' : 'parameter-bad';
-                const iconClass = param.ok ? 'good-icon' : 'bad-icon';
-                const icon = param.ok 
-                    ? '<svg class="status-icon good-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>'
-                    : '<svg class="status-icon bad-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-
-                parametersHtml += `
-                    <div class="parameter-item ${statusClass}">
-                        <div class="parameter-info">
-                            ${icon}
-                            <span>${param.name}</span>
-                        </div>
-                        <div class="parameter-status">
-                            <div class="parameter-value ${iconClass}">
-                                ${param.value}${param.unit}
-                            </div>
-                            <div class="parameter-range">
-                                Ideal: ${param.range[0]}-${param.range[1]}${param.unit}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            const overallIcon = allOk 
-                ? '<svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>'
-                : '<svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-
-            resultContainer.innerHTML = `
-                <div class="status-overall ${allOk ? 'status-good' : 'status-bad'}">
-                    ${overallIcon}
-                    ${overallStatus}
-                </div>
-                <div class="parameter-list">
-                    ${parametersHtml}
-                </div>
-            `;
-        }
-
-        // Event listeners
-        document.getElementById('fish-select').addEventListener('change', evaluateFish);
-
-        // Initialize
-        fetchData();
-        setInterval(fetchData, 5000);
-    </script>
+    // Update every 5 seconds
+    setInterval(fetchData, 5000);
+  </script>
 </body>
 </html>
