@@ -474,7 +474,11 @@
               </svg>
               <h3 class="fish-title">Jenis Ikan yang Cocok</h3>
             </div>
-            <p class="fish-type">${data.prediksi}</p>
+              <p class="fish-type">${
+                Array.isArray(data.prediksi) && data.prediksi.length > 0
+                  ? data.prediksi.join(", ")
+                  : "Tidak ada ikan yang cocok"
+              }</p>
           </div>
         </div>
       `;
