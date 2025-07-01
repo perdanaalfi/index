@@ -504,7 +504,7 @@
 
     async function fetchData() {
       try {
-        const response = await fetch('https://klasifikasi-ikan-api.onrender.com/update/27.5/4.5/7.2');
+        const response = await fetch('https://klasifikasi-ikan-api.onrender.com/last-prediction');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
