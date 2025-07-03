@@ -410,6 +410,18 @@
         second: '2-digit'
       });
       
+      // Debug: Log data yang diterima
+      console.log('📊 Data yang diterima:', data);
+      console.log('🐟 Prediksi ikan:', data.prediksi);
+      
+      // Tampilkan prediksi ikan
+      let fishDisplay = "Tidak ada ikan yang cocok";
+      if (data.prediksi && Array.isArray(data.prediksi) && data.prediksi.length > 0) {
+        fishDisplay = data.prediksi.map(ikan => 
+          ikan.charAt(0).toUpperCase() + ikan.slice(1)
+        ).join(", ");
+      }
+      
       dashboard.innerHTML = `
         <div class="last-updated">
           <div class="last-updated-text">
@@ -432,7 +444,7 @@
                 </div>
                 <h3 class="parameter-title">Suhu Air</h3>
               </div>
-              <div class="parameter-value">${data.suhu}</div>
+              <div class="parameter-value">${data.suhu || 0}</div>
               <div class="parameter-unit">°C</div>
             </div>
 
@@ -445,7 +457,7 @@
                 </div>
                 <h3 class="parameter-title">Kadar Oksigen (DO)</h3>
               </div>
-              <div class="parameter-value">${data.do}</div>
+              <div class="parameter-value">${data.do || 0}</div>
               <div class="parameter-unit">mg/L</div>
             </div>
 
@@ -458,7 +470,7 @@
                 </div>
                 <h3 class="parameter-title">pH Air</h3>
               </div>
-              <div class="parameter-value">${data.ph}</div>
+              <div class="parameter-value">${data.ph || 0}</div>
               <div class="parameter-unit">pH</div>
             </div>
           </div>
@@ -474,11 +486,7 @@
               </svg>
               <h3 class="fish-title">Jenis Ikan yang Cocok</h3>
             </div>
-              <p class="fish-type">${
-                Array.isArray(data.prediksi) && data.prediksi.length > 0
-                  ? data.prediksi.join(", ")
-                  : "Tidak ada ikan yang cocok"
-              }</p>
+            <p class="fish-type">${fishDisplay}</p>
           </div>
         </div>
       `;
@@ -510,14 +518,16 @@
         }
         const data = await response.json();
         
+        console.log('🌐 Response dari server:', data);
+        
         // Validate data structure
-        if (!data || typeof data.suhu === 'undefined' || typeof data.do === 'undefined' || typeof data.ph === 'undefined') {
+        if (!data || typeof data.suhu === 'undefined' || typeof data.ph === 'undefined') {
           throw new Error('Data tidak lengkap dari server');
         }
         
         updateDashboard(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('❌ Error fetching data:', error);
         showError('Gagal memuat data dari server. Periksa koneksi internet Anda.');
       }
     }
