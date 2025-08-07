@@ -96,22 +96,6 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .last-updated {
-      text-align: center;
-      padding: 1.5rem 2rem;
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      border-bottom: 1px solid #e2e8f0;
-    }
-
-    .last-updated-text {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
     .parameters-section {
       padding: 2rem;
     }
@@ -401,14 +385,6 @@
   <script>
     function updateDashboard(data) {
       const dashboard = document.getElementById('dashboard');
-      const timestamp = new Date(data.waktu).toLocaleString('id-ID', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
       
       // Debug: Log data yang diterima
       console.log('📊 Data yang diterima:', data);
@@ -423,16 +399,6 @@
       }
       
       dashboard.innerHTML = `
-        <div class="last-updated">
-          <div class="last-updated-text">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <polyline points="12,6 12,12 16,14"/>
-            </svg>
-            Terakhir diperbarui: ${timestamp}
-          </div>
-        </div>
-        
         <div class="parameters-section">
           <div class="parameters-grid">
             <div class="parameter-card temperature">
